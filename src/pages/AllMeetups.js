@@ -1,29 +1,34 @@
+import { useState } from "react";
+
 import MeetupList from "../components/meetups/MeetupList";
 
-const DUMMY_DATA = [
-  {
-    id: "m1",
-    title: "This is a first meetup",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Frauenkirche_and_Neues_Rathaus_Munich_March_2013.JPG/1920px-Frauenkirche_and_Neues_Rathaus_Munich_March_2013.JPG",
-    addresses: "Meetupstreet 5, 12345 Meetup City",
-    description: "This is a first, amazing meetup",
-  },
-  {
-    id: "m2",
-    title: "This is a first meetup",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Frauenkirche_and_Neues_Rathaus_Munich_March_2013.JPG/1920px-Frauenkirche_and_Neues_Rathaus_Munich_March_2013.JPG",
-    addresses: "Meetupstreet 5, 12345 Meetup City",
-    description: "This is a first, amazing meetup",
-  },
-];
-
 function AllMeetupsPage() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadedMeetups, setLoadedMeetups] = useState([]);
+
+  fetch(
+    "https://react-getting-started-86f31-default-rtdb.firebaseio.com/meetups.json"
+  )
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      setIsLoading(false);
+      setLoadedMeetups(data);
+    });
+
+  if (isLoading) {
+    return (
+      <section>
+        <p>Loading...</p>
+      </section>
+    );
+  }
+
   return (
     <section>
       <h1>All Meetups</h1>
-      <MeetupList meetups={DUMMY_DATA} />
+      <MeetupList meetups={loadedMeetups} />
     </section>
   );
 }
